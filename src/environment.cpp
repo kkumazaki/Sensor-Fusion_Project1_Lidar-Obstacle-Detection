@@ -128,8 +128,10 @@ void cityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer, ProcessPointCloud
   Eigen::Vector4f minPoint(-15, -6.5, -2, 1);
   Eigen::Vector4f maxPoint( 30,  6.5,  1, 1);
   // Segmentation Parameters
-  int maxIterations = 25;
-  float distanceThreshold = 0.2;
+  int maxIterations = 40;
+  float distanceThreshold = 0.3;
+  //int maxIterations = 25;
+  //float distanceThreshold = 0.2;
   //int maxIterations = 100;
   //float distanceThreshold = 0.2;
   // Clustering Parameters
@@ -151,8 +153,10 @@ void cityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer, ProcessPointCloud
   pcl::PointCloud<pcl::PointXYZI>::Ptr filterCloud = pointProcessorI->FilterCloud(inputCloud, filterRes , minPoint, maxPoint);
   //renderPointCloud(viewer,filterCloud,"filterCloud");
 
+  // Project: Switch from PCL algorithm to RANSAC
+  std::pair<pcl::PointCloud<pcl::PointXYZI>::Ptr, pcl::PointCloud<pcl::PointXYZI>::Ptr> segmentCloud = pointProcessorI->Ransac(filterCloud, maxIterations, distanceThreshold);
   // Lesson 4, Chapter 6 (step1: Segment the filtered cloud into two parts, road and obstacles.)
-  std::pair<pcl::PointCloud<pcl::PointXYZI>::Ptr, pcl::PointCloud<pcl::PointXYZI>::Ptr> segmentCloud = pointProcessorI->SegmentPlane(filterCloud, maxIterations, distanceThreshold);
+  //std::pair<pcl::PointCloud<pcl::PointXYZI>::Ptr, pcl::PointCloud<pcl::PointXYZI>::Ptr> segmentCloud = pointProcessorI->SegmentPlane(filterCloud, maxIterations, distanceThreshold);
   //renderPointCloud(viewer, segmentCloud.first, "obstCloud", Color(1,0,0));
   renderPointCloud(viewer, segmentCloud.second, "planeCloud", Color(0,1,0));
 

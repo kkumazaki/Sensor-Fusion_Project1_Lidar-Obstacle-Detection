@@ -19,6 +19,90 @@ void ProcessPointClouds<PointT>::numPoints(typename pcl::PointCloud<PointT>::Ptr
     std::cout << cloud->points.size() << std::endl;
 }
 
+// Project: Switch from PCL algorithm to RANSAC
+template<typename PointT>
+std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::Ransac(typename pcl::PointCloud<PointT>::Ptr cloud, int maxIterations, float distanceThreshold)
+{
+    // Time segmentation process
+	auto startTime = std::chrono::steady_clock::now();
+
+	std::unordered_set<int> inliersResult;
+	srand(time(NULL));
+	
+	// TODO: Fill in this function
+	// Lesson 2, Chapter 7 (2D)
+	// Lesson 2, Chapter 8 (3D)
+	while (maxIterations--){
+		// Randomly sample subset and fit line
+		std::unordered_set<int> inliers;
+		while (inliers.size() < 3)
+			inliers.insert(rand()%(cloud->points.size())); //unordered_set will reject the same index adding.
+
+		float x1, y1, z1, x2, y2, z2, x3, y3, z3;
+
+		auto itr = inliers.begin(); //pointer of the begining of inliers.
+
+		x1 = cloud->points[*itr].x;
+		y1 = cloud->points[*itr].y;
+		z1 = cloud->points[*itr].z;
+		itr++;
+		x2 = cloud->points[*itr].x;
+		y2 = cloud->points[*itr].y;
+		z2 = cloud->points[*itr].z;
+		itr++;
+		x3 = cloud->points[*itr].x;
+		y3 = cloud->points[*itr].y;
+		z3 = cloud->points[*itr].z;
+
+		float A = (y2 - y1)*(z3 - z1) - (z2 - z1)*(y3 -y1);
+		float B = (z2 - z1)*(x3 - x1) - (x2 - x1)*(z3 -z1);
+		float C = (x2 - x1)*(y3 - y1) - (y2 - y1)*(x3 -x1);
+		float D = -(A*x1 + B*y1 + C*z1);
+
+		// Measure distance between every point and fitted line
+		// If distance is smaller than threshold count it as inlier
+		
+		for (int index = 0; index < cloud->points.size(); index++){
+			if (inliers.count(index) > 0)
+				continue;
+			
+			pcl::PointXYZI point = cloud->points[index];
+			float x4 = point.x;
+			float y4 = point.y;
+			float z4 = point.z;
+			float d = fabs(A*x4 + B*y4 + C*z4 + D)/sqrt(A*A + B*B +C*C);
+			if (d <= distanceThreshold){
+				inliers.insert(index);
+			}
+		}
+
+		if (inliers.size() > inliersResult.size()){
+			inliersResult = inliers; // Update the result if there are more inliers
+		}			
+	}
+
+	typename pcl::PointCloud<PointT>::Ptr cloudInliers(new pcl::PointCloud<PointT>());
+	typename pcl::PointCloud<PointT>::Ptr cloudOutliers(new pcl::PointCloud<PointT>());
+
+	for(int index = 0; index < cloud->points.size(); index++)
+	{
+		pcl::PointXYZI point = cloud->points[index];
+		if(inliersResult.count(index))
+			cloudInliers->points.push_back(point);
+		else
+			cloudOutliers->points.push_back(point);
+	}
+    
+    std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> segResult(cloudInliers, cloudOutliers);
+
+	// Return indicies of inliers from fitted line with most inliers
+    auto endTime = std::chrono::steady_clock::now();
+    auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
+    std::cout << "Ransac took " << elapsedTime.count() << " milliseconds" << std::endl;
+
+	return segResult;
+}
+
 
 template<typename PointT>
 typename pcl::PointCloud<PointT>::Ptr ProcessPointClouds<PointT>::FilterCloud(typename pcl::PointCloud<PointT>::Ptr cloud, float filterRes, Eigen::Vector4f minPoint, Eigen::Vector4f maxPoint)

@@ -19,6 +19,10 @@
 #include <chrono>
 #include "render/box.h"
 
+// Project: Switch from PCL algorithm to RANSAC
+#include <unordered_set>
+#include <cmath>
+
 template<typename PointT>
 class ProcessPointClouds {
 public:
@@ -29,6 +33,10 @@ public:
     ~ProcessPointClouds();
 
     void numPoints(typename pcl::PointCloud<PointT>::Ptr cloud);
+
+    // Project: Switch from PCL algorithm to RANSAC
+    std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> Ransac(typename pcl::PointCloud<PointT>::Ptr cloud, int maxIterations, float distanceThreshold);
+
 
     typename pcl::PointCloud<PointT>::Ptr FilterCloud(typename pcl::PointCloud<PointT>::Ptr cloud, float filterRes, Eigen::Vector4f minPoint, Eigen::Vector4f maxPoint);
 
