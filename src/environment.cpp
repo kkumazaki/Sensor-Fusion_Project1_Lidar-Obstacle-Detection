@@ -136,8 +136,8 @@ void cityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer, ProcessPointCloud
   //float distanceThreshold = 0.2;
   // Clustering Parameters
   float clusterTolerance = 0.5;
-  int minSize = 10;
-  int maxSize = 500;
+  int minSize = 10; 
+  int maxSize = 500; 
   //float clusterTolerance = 1.0;
   //int minSize = 3;
   //int maxSize = 30;
@@ -160,9 +160,12 @@ void cityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer, ProcessPointCloud
   //renderPointCloud(viewer, segmentCloud.first, "obstCloud", Color(1,0,0));
   renderPointCloud(viewer, segmentCloud.second, "planeCloud", Color(0,1,0));
 
+  // Project: Switch from PCL algorithm to KD-Tree Clustering
   // Lesson 4, Chapter 6 (step2: Cluster the obstacle cloud.)
   //  (Euclidean Clustering with PCL)
-  std::vector<pcl::PointCloud<pcl::PointXYZI>::Ptr> cloudClusters = pointProcessorI->Clustering(segmentCloud.first, clusterTolerance, minSize, maxSize);
+  //std::vector<pcl::PointCloud<pcl::PointXYZI>::Ptr> cloudClusters = pointProcessorI->Clustering(segmentCloud.first, clusterTolerance, minSize, maxSize);
+  std::vector<pcl::PointCloud<pcl::PointXYZI>::Ptr> cloudClusters = pointProcessorI->EuclideanClustering(segmentCloud.first, clusterTolerance, minSize, maxSize);
+
 
   int clusterId = 0;
   std::vector<Color> colors = {Color(1,0,0), Color(1,1,0), Color(0,0,1)};

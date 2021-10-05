@@ -23,6 +23,9 @@
 #include <unordered_set>
 #include <cmath>
 
+// Project: Switch from PCL algorithm to KD-Tree Clustering
+#include "clusterProject.cpp"
+
 template<typename PointT>
 class ProcessPointClouds {
 public:
@@ -37,6 +40,8 @@ public:
     // Project: Switch from PCL algorithm to RANSAC
     std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> Ransac(typename pcl::PointCloud<PointT>::Ptr cloud, int maxIterations, float distanceThreshold);
 
+    // Project: Switch from PCL algorithm to KD-Tree Clustering
+    std::vector<typename pcl::PointCloud<PointT>::Ptr> EuclideanClustering(typename pcl::PointCloud<PointT>::Ptr cloud, float clusterTolerance, int minSize, int maxSize);
 
     typename pcl::PointCloud<PointT>::Ptr FilterCloud(typename pcl::PointCloud<PointT>::Ptr cloud, float filterRes, Eigen::Vector4f minPoint, Eigen::Vector4f maxPoint);
 

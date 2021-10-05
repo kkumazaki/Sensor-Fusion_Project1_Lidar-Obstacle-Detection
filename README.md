@@ -21,10 +21,12 @@ In this project, I followed each Lesson of Udacity classroom and made a pipeline
   I learned how to filter the Real PCD by using Voxel Grid Filtering. It reduces number of points in cloud to process faster.
 
 - Segmentation  
-  I learned how to segment the point clouds by using RANSAC, which is an iterative method that randomly picks subsets of points as inliers.
+  I learned how to segment the point clouds by using RANSAC, which is an iterative method that randomly picks subsets of points as inliers.  
+  I switched the codes from PCL method to RANSAC (Lesson 2, Chapter 8).
 
 - Clustering  
-  I learned how to cluster the segmented points of groups by using Euclidean Clustering. It uses a fast algorithm called KD-Tree, which is a binary tree to insert points alternating comparison between dimensions. 
+  I learned how to cluster the segmented points of groups by using Euclidean Clustering. It uses a fast algorithm called KD-Tree, which is a binary tree to insert points alternating comparison between dimensions.   
+  I switched the codes from PCL method to KD-Tree Clustering (Lesson 3, Chapter 8).
 
 - Bounding Boxes  
   I showed bounding boxes for all clustered obstacles with red lines.

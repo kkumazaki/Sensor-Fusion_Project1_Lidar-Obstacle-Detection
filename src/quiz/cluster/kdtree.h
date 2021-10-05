@@ -5,14 +5,14 @@
 
 
 // Structure to represent node of kd tree
-struct Node
+struct Node_quiz
 {
 	std::vector<float> point;
 	int id;
-	Node* left;
-	Node* right;
+	Node_quiz* left;
+	Node_quiz* right;
 
-	Node(std::vector<float> arr, int setId)
+	Node_quiz(std::vector<float> arr, int setId)
 	:	point(arr), id(setId), left(NULL), right(NULL)
 	{}
 
@@ -23,11 +23,11 @@ struct Node
 	//}
 };
 
-struct KdTree
+struct KdTree_quiz
 {
-	Node* root;
+	Node_quiz* root;
 
-	KdTree()
+	KdTree_quiz()
 	: root(NULL)
 	{}
 
@@ -38,9 +38,9 @@ struct KdTree
 
 	// Lesson 3, Chapter 6
 	// Recursive Helper Function
-	void insertHelper(Node** node, uint depth, std::vector<float> point, int id){
+	void insertHelper(Node_quiz** node, uint depth, std::vector<float> point, int id){
 		if (*node == NULL){ // Tree is empty.
-			*node = new Node(point, id);
+			*node = new Node_quiz(point, id);
 		}
 		else{ // Tree is not empty.
 			// Calculate current dim
